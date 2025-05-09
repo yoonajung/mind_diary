@@ -2,11 +2,11 @@
 {
   "name": "마음일기",
   "short_name": "마음일기",
-  "start_url": "home.html",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#f8fbfa",
-  "theme_color": "#3b6f6f",
-  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#aee1d6",
+  "description": "마음 상태를 기록하고 관리하는 감성 일기 앱",
   "icons": [
     {
       "src": "icon-192.png",
