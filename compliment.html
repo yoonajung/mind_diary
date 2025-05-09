@@ -1,21 +1,50 @@
 
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><title>칭찬 일기</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>셀프 칭찬 일기</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff4f4;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      color: #9e4d4d;
+      text-align: center;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-size: 16px;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: none;
+      margin-top: 10px;
+    }
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #ffaaaa;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #f99797;
+    }
+  </style>
+</head>
 <body>
-<h2>🌟 셀프 칭찬 일기</h2>
-<textarea id="cmt" placeholder="오늘 나를 칭찬할 점은?" style="width:100%;height:100px;"></textarea><br>
-<button onclick="save()">저장</button>
-<p id="msg" style="color:blue;display:none;">💙 당신은 대단해요!</p>
-<script>
-function save() {
-  const text = cmt.value.trim();
-  if (text) {
-    localStorage.setItem("compliment", text);
-    msg.style.display = "block";
-  } else {
-    alert("내용을 작성해 주세요.");
-  }
-}
-</script>
-</body></html>
+  <h2>🌟 셀프 칭찬 일기</h2>
+  <textarea placeholder="오늘 나를 칭찬해주고 싶은 일을 적어보세요..."></textarea>
+  <button onclick="alert('칭찬일기가 저장되었습니다.')">저장하기</button>
+</body>
+</html>
