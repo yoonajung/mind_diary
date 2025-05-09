@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>루틴 체크</title></head>
+<body>
+<h2>🧩 하찮은 루틴</h2>
+<ul>
+  <li><input type="checkbox" id="r1"> 🥤 물 마시기</li>
+  <li><input type="checkbox" id="r2"> 📵 폰 내려놓기</li>
+  <li><input type="checkbox" id="r3"> 🚶 10분 걷기</li>
+  <li><input type="checkbox" id="r4"> 🤸 5분 스트레칭</li>
+</ul>
+<button onclick="save()">Save</button>
+<p id="msg" style="color:green;display:none;">✔ 루틴 저장 완료!</p>
+<script>
+function save() {
+  const data = {
+    drink: r1.checked,
+    phone: r2.checked,
+    walk: r3.checked,
+    stretch: r4.checked
+  };
+  localStorage.setItem("routine", JSON.stringify(data));
+  msg.style.display = "block";
+}
+</script>
+</body></html>

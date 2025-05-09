@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>감사 일기</title></head>
+<body>
+<h2>💌 감사한 일 3가지</h2>
+<input id="g1" placeholder="#1 감사한 순간" style="width:100%;margin-bottom:5px;"><br>
+<input id="g2" placeholder="#2 감사한 순간" style="width:100%;margin-bottom:5px;"><br>
+<input id="g3" placeholder="#3 감사한 순간" style="width:100%;margin-bottom:5px;"><br>
+<button onclick="save()">저장하기</button>
+<p id="msg" style="color:green;display:none;">🙏 저장 완료!</p>
+<script>
+function save() {
+  let v1 = g1.value.trim(), v2 = g2.value.trim(), v3 = g3.value.trim();
+  if (v1 && v2 && v3) {
+    localStorage.setItem("gratitude", JSON.stringify([v1, v2, v3]));
+    msg.style.display = "block";
+  } else {
+    alert("모든 항목을 입력해주세요.");
+  }
+}
+</script>
+</body></html>

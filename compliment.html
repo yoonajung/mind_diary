@@ -1,0 +1,21 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head><meta charset="UTF-8"><title>칭찬 일기</title></head>
+<body>
+<h2>🌟 셀프 칭찬 일기</h2>
+<textarea id="cmt" placeholder="오늘 나를 칭찬할 점은?" style="width:100%;height:100px;"></textarea><br>
+<button onclick="save()">저장</button>
+<p id="msg" style="color:blue;display:none;">💙 당신은 대단해요!</p>
+<script>
+function save() {
+  const text = cmt.value.trim();
+  if (text) {
+    localStorage.setItem("compliment", text);
+    msg.style.display = "block";
+  } else {
+    alert("내용을 작성해 주세요.");
+  }
+}
+</script>
+</body></html>
