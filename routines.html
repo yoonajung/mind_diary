@@ -1,27 +1,44 @@
 
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><title>루틴 체크</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>하찮은 루틴</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f3;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      color: #6b5e38;
+      text-align: center;
+    }
+    .routine {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #fff;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 6px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    label {
+      font-size: 16px;
+    }
+    input[type="checkbox"] {
+      transform: scale(1.4);
+    }
+  </style>
+</head>
 <body>
-<h2>🧩 하찮은 루틴</h2>
-<ul>
-  <li><input type="checkbox" id="r1"> 🥤 물 마시기</li>
-  <li><input type="checkbox" id="r2"> 📵 폰 내려놓기</li>
-  <li><input type="checkbox" id="r3"> 🚶 10분 걷기</li>
-  <li><input type="checkbox" id="r4"> 🤸 5분 스트레칭</li>
-</ul>
-<button onclick="save()">Save</button>
-<p id="msg" style="color:green;display:none;">✔ 루틴 저장 완료!</p>
-<script>
-function save() {
-  const data = {
-    drink: r1.checked,
-    phone: r2.checked,
-    walk: r3.checked,
-    stretch: r4.checked
-  };
-  localStorage.setItem("routine", JSON.stringify(data));
-  msg.style.display = "block";
-}
-</script>
-</body></html>
+  <h2>✅ 하찮은 나만의 루틴</h2>
+  <div class="routine"><label>🥤 Drink water</label><input type="checkbox"></div>
+  <div class="routine"><label>📵 Put down phone</label><input type="checkbox"></div>
+  <div class="routine"><label>🚶 Walk 10 minutes</label><input type="checkbox"></div>
+  <div class="routine"><label>🤸 Stretch 5 minutes</label><input type="checkbox"></div>
+</body>
+</html>
