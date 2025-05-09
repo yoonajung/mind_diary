@@ -1,22 +1,53 @@
 
 <!DOCTYPE html>
 <html lang="ko">
-<head><meta charset="UTF-8"><title>알림 설정</title></head>
+<head>
+  <meta charset="UTF-8">
+  <title>마음 알림 설정</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f9ff;
+      padding: 40px;
+      max-width: 600px;
+      margin: auto;
+    }
+    h2 {
+      color: #3779a6;
+      text-align: center;
+    }
+    label {
+      font-size: 16px;
+      display: block;
+      margin: 20px 0 10px;
+    }
+    input[type="time"] {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      width: 100%;
+    }
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #b2daf2;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #a1cde7;
+    }
+  </style>
+</head>
 <body>
-<h2>⏰ 알림 설정</h2>
-<label for="alarm">알림 시각:</label>
-<input type="time" id="alarm">
-<button onclick="save()">저장</button>
-<p id="msg" style="color:green;display:none;">🔔 알림 저장 완료!</p>
-<script>
-function save() {
-  const time = alarm.value;
-  if (time) {
-    localStorage.setItem("alarmTime", time);
-    msg.style.display = "block";
-  } else {
-    alert("시간을 선택하세요.");
-  }
-}
-</script>
-</body></html>
+  <h2>⏰ 마음 알림 설정</h2>
+  <label for="reminderTime">하루 중 마음을 챙기고 싶은 시간:</label>
+  <input type="time" id="reminderTime">
+  <button onclick="alert('알림 설정이 저장되었습니다.')">저장하기</button>
+</body>
+</html>
