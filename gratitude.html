@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>감사 일기</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       background: #f0fff7;
       padding: 40px;
       max-width: 600px;
@@ -49,7 +49,7 @@
   <textarea id="item3" placeholder="#3 감사한 순간..."></textarea>
   <button onclick="saveGratitude()">저장하기</button>
 
-  <!-- Firebase SDK -->
+  <!-- Firebase SDK (모듈형) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -66,28 +66,31 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    async function saveGratitude() {
-      const item1 = document.getElementById('item1').value.trim();
-      const item2 = document.getElementById('item2').value.trim();
-      const item3 = document.getElementById('item3').value.trim();
+    window.saveGratitude = async function () {
+      const item1 = document.getElementById("item1").value.trim();
+      const item2 = document.getElementById("item2").value.trim();
+      const item3 = document.getElementById("item3").value.trim();
 
       if (!item1 && !item2 && !item3) {
-        alert("감사한 일을 적어주세요 🙏");
+        alert("감사한 일을 하나 이상 입력해주세요 🙏");
         return;
       }
 
       try {
         await addDoc(collection(db, "gratitudes"), {
-          item1, item2, item3,
+          item1,
+          item2,
+          item3,
           createdAt: serverTimestamp()
         });
         alert("감사 일기가 저장되었습니다 🌿");
-        document.getElementById('item1').value = '';
-        document.getElementById('item2').value = '';
-        document.getElementById('item3').value = '';
+
+        document.getElementById("item1").value = "";
+        document.getElementById("item2").value = "";
+        document.getElementById("item3").value = "";
       } catch (e) {
         console.error("저장 실패:", e);
-        alert("저장에 실패했습니다. 콘솔을 확인해주세요.");
+        alert("저장 중 오류가 발생했습니다.");
       }
     }
   </script>
