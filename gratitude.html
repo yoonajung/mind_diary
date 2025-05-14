@@ -2,54 +2,94 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>감사일기</title>
+  <meta charset="UTF-8" />
+  <title>감사 일기</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f1f8f5;
+      background: #f0fff7;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #3c6e6e;
+      color: #2e6f5d;
       text-align: center;
     }
-    .gratitude-box {
-      margin-top: 20px;
-    }
-    input {
+    textarea {
       width: 100%;
+      height: 60px;
       font-size: 16px;
       padding: 10px;
       margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
+      resize: none;
     }
     button {
       display: block;
       margin: 30px auto 0;
       padding: 10px 25px;
       font-size: 16px;
-      background-color: #aee1d6;
+      background-color: #c2f2dd;
       color: #333;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #9ed7ca;
+      background-color: #b1e5cf;
     }
   </style>
 </head>
 <body>
-  <h2>💌 감사일기</h2>
-  <div class="gratitude-box">
-    <input type="text" placeholder="감사한 일 1가지">
-    <input type="text" placeholder="감사한 일 2가지">
-    <input type="text" placeholder="감사한 일 3가지">
-  </div>
-  <button onclick="alert('감사일기가 저장되었습니다.')">저장하기</button>
+  <h2>💌 오늘 감사한 일 3가지</h2>
+  <textarea id="item1" placeholder="#1 감사한 순간..."></textarea>
+  <textarea id="item2" placeholder="#2 감사한 순간..."></textarea>
+  <textarea id="item3" placeholder="#3 감사한 순간..."></textarea>
+  <button onclick="saveGratitude()">저장하기</button>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    async function saveGratitude() {
+      const item1 = document.getElementById('item1').value.trim();
+      const item2 = document.getElementById('item2').value.trim();
+      const item3 = document.getElementById('item3').value.trim();
+
+      if (!item1 && !item2 && !item3) {
+        alert("감사한 일을 적어주세요 🙏");
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "gratitudes"), {
+          item1, item2, item3,
+          createdAt: serverTimestamp()
+        });
+        alert("감사 일기가 저장되었습니다 🌿");
+        document.getElementById('item1').value = '';
+        document.getElementById('item2').value = '';
+        document.getElementById('item3').value = '';
+      } catch (e) {
+        console.error("저장 실패:", e);
+        alert("저장에 실패했습니다. 콘솔을 확인해주세요.");
+      }
+    }
+  </script>
 </body>
 </html>
