@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>나의 마음일기 기록</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fffef9;
+      padding: 40px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h2 {
+      margin-top: 50px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+      color: #4a4a4a;
+    }
+    ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    li {
+      background: #f7f7f7;
+      padding: 12px;
+      margin: 8px 0;
+      border-radius: 6px;
+      font-size: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🗂 나의 기록 모아보기</h1>
+
+  <div id="diaries"></div>
+  <div id="gratitudes"></div>
+  <div id="compliments"></div>
+  <div id="routines"></div>
+  <div id="readings"></div>
+  <div id="alarms"></div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const collections = [
+      { id: "diaries", label: "📓 마음 일기", field: "content" },
+      { id: "gratitudes", label: "💌 감사 일기", fields: ["item1", "item2", "item3"] },
+      { id: "compliments", label: "🌟 셀프 칭찬", field: "content" },
+      { id: "readings", label: "📖 독서 노트", field: "quote" },
+      { id: "alarmSettings", label: "⏰ 알림 설정", field: "time" },
+    ];
+
+    async function loadCollections() {
+      for (let col of collections) {
+        const snapshot = await db.collection(col.id).orderBy("createdAt", "desc").limit(5).get();
+        const container = document.getElementById(col.id);
+        if (!snapshot.empty) {
+          container.innerHTML = `<h2>${col.label}</h2><ul>` +
+            snapshot.docs.map(doc => {
+              const data = doc.data();
+              if (col.fields) {
+                return `<li>${col.fields.map(f => data[f] || "").filter(Boolean).join("<br>")}</li>`;
+              } else {
+                return `<li>${data[col.field]}</li>`;
+              }
+            }).join("") +
+            `</ul>`;
+        }
+      }
+
+      // 루틴만 별도로 출력
+      const routinesSnap = await db.collection("routines").orderBy("createdAt", "desc").limit(5).get();
+      const routinesEl = document.getElementById("routines");
+      if (!routinesSnap.empty) {
+        routinesEl.innerHTML = `<h2>🥕 하찮은 루틴</h2><ul>` +
+          routinesSnap.docs.map(doc => {
+            const r = doc.data();
+            const checked = [];
+            if (r.drinkWater) checked.push("🥤 Drink water");
+            if (r.putDownPhone) checked.push("📵 Put down phone");
+            if (r.walk10Min) checked.push("🚶 Walk 10 minutes");
+            if (r.stretch5Min) checked.push("🤸 Stretch 5 minutes");
+            if (r.customRoutines) checked.push(...r.customRoutines.map(txt => `🔹 ${txt}`));
+            return `<li>${checked.join("<br>")}</li>`;
+          }).join("") + `</ul>`;
+      }
+    }
+
+    loadCollections();
+  </script>
+</body>
+</html>
