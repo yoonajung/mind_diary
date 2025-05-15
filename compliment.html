@@ -7,13 +7,13 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f3f0ff;
+      background: #f4f0ff;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #5e4b8b;
+      color: #5b489e;
       text-align: center;
     }
     textarea {
@@ -31,26 +31,27 @@
       margin: 30px auto 0;
       padding: 10px 25px;
       font-size: 16px;
-      background-color: #ddd1ff;
+      background-color: #d3c4f9;
       color: #333;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #ccb7f6;
+      background-color: #c5b5ed;
     }
   </style>
 </head>
 <body>
   <h2>🌟 오늘 나를 칭찬해 주세요</h2>
-  <textarea id="compliment" placeholder="오늘 내가 잘한 일, 작은 성취를 적어보세요..."></textarea>
+  <textarea id="compliment" placeholder="작은 성취나 노력을 적어보세요..."></textarea>
   <button onclick="saveCompliment()">저장하기</button>
 
-  <!-- Firebase SDK (비모듈 방식, 안정 작동) -->
+  <!-- Firebase SDK (Compat 버전) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script>
+    // Firebase 설정
     const firebaseConfig = {
       apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
       authDomain: "my-mind-diary.firebaseapp.com",
@@ -60,13 +61,15 @@
       appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
     };
 
+    // Firebase 초기화
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // 저장 함수
     function saveCompliment() {
       const content = document.getElementById("compliment").value.trim();
       if (!content) {
-        alert("칭찬할 내용을 입력해주세요 🙌");
+        alert("칭찬할 내용을 입력해주세요 😊");
         return;
       }
 
@@ -80,7 +83,7 @@
       })
       .catch((error) => {
         console.error("저장 실패:", error);
-        alert("저장에 실패했습니다.");
+        alert("저장에 실패했습니다. 콘솔을 확인해주세요.");
       });
     }
   </script>
