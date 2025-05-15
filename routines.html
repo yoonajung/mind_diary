@@ -3,42 +3,104 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>하찮은 루틴</title>
+  <title>하찮은 나만의 루틴</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f9f9f3;
+      background: #f8fff9;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #6b5e38;
+      color: #45805c;
       text-align: center;
     }
-    .routine {
+    .routine-item {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      background: #fff;
-      margin: 10px 0;
-      padding: 12px 16px;
-      border-radius: 6px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      margin: 15px 0;
     }
-    label {
+    .routine-item span {
+      flex: 1;
       font-size: 16px;
     }
-    input[type="checkbox"] {
-      transform: scale(1.4);
+    .routine-item input[type="checkbox"] {
+      transform: scale(1.3);
+    }
+    button {
+      display: block;
+      margin: 30px auto 0;
+      padding: 10px 25px;
+      font-size: 16px;
+      background-color: #c7f0d6;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #b4e6c9;
     }
   </style>
 </head>
 <body>
-  <h2>✅ 하찮은 나만의 루틴</h2>
-  <div class="routine"><label>🥤 Drink water</label><input type="checkbox"></div>
-  <div class="routine"><label>📵 Put down phone</label><input type="checkbox"></div>
-  <div class="routine"><label>🚶 Walk 10 minutes</label><input type="checkbox"></div>
-  <div class="routine"><label>🤸 Stretch 5 minutes</label><input type="checkbox"></div>
+  <h2>🥕 하찮은 나만의 루틴</h2>
+  <div class="routine-item">
+    <span>🥤 Drink water</span>
+    <input type="checkbox" id="drinkWater">
+  </div>
+  <div class="routine-item">
+    <span>📵 Put down phone</span>
+    <input type="checkbox" id="putDownPhone">
+  </div>
+  <div class="routine-item">
+    <span>🚶 Walk 10 minutes</span>
+    <input type="checkbox" id="walk10Min">
+  </div>
+  <div class="routine-item">
+    <span>🤸 Stretch 5 minutes</span>
+    <input type="checkbox" id="stretch5Min">
+  </div>
+  <button onclick="saveRoutine()">저장하기</button>
+
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function saveRoutine() {
+      const drinkWater = document.getElementById("drinkWater").checked;
+      const putDownPhone = document.getElementById("putDownPhone").checked;
+      const walk10Min = document.getElementById("walk10Min").checked;
+      const stretch5Min = document.getElementById("stretch5Min").checked;
+
+      db.collection("routines").add({
+        drinkWater,
+        putDownPhone,
+        walk10Min,
+        stretch5Min,
+        createdAt: new Date()
+      })
+      .then(() => {
+        alert("루틴 체크가 저장되었습니다 🌱");
+      })
+      .catch((error) => {
+        console.error("저장 실패:", error);
+        alert("저장에 실패했습니다.");
+      });
+    }
+  </script>
 </body>
 </html>
