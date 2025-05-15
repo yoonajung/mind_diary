@@ -3,51 +3,95 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>마음 알림 설정</title>
+  <title>마음알림 설정</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f4f9ff;
+      background: #fefaf3;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #3779a6;
       text-align: center;
+      color: #9a6a3f;
     }
     label {
-      font-size: 16px;
       display: block;
-      margin: 20px 0 10px;
+      font-size: 16px;
+      margin-top: 30px;
+      margin-bottom: 10px;
+      color: #444;
     }
     input[type="time"] {
-      padding: 10px;
       font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
+      padding: 8px;
       width: 100%;
+      max-width: 300px;
+      margin: 0 auto;
+      display: block;
+      border: 1px solid #ccc;
+      border-radius: 4px;
     }
     button {
       display: block;
-      margin: 30px auto 0;
+      margin: 40px auto 0;
       padding: 10px 25px;
       font-size: 16px;
-      background-color: #b2daf2;
+      background-color: #f3cc9f;
       color: #333;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #a1cde7;
+      background-color: #e8ba82;
     }
   </style>
 </head>
 <body>
-  <h2>⏰ 마음 알림 설정</h2>
-  <label for="reminderTime">하루 중 마음을 챙기고 싶은 시간:</label>
-  <input type="time" id="reminderTime">
-  <button onclick="alert('알림 설정이 저장되었습니다.')">저장하기</button>
+  <h2>🔔 마음알림 시간 설정</h2>
+
+  <label for="alarmTime">하루에 한 번 마음챙김 알림을 받을 시간</label>
+  <input type="time" id="alarmTime" />
+
+  <button onclick="saveAlarmTime()">저장하기</button>
+
+  <!-- Firebase SDK (Compat 버전) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function saveAlarmTime() {
+      const time = document.getElementById("alarmTime").value;
+      if (!time) {
+        alert("시간을 선택해주세요 ⏰");
+        return;
+      }
+
+      db.collection("alarmSettings").add({
+        time: time,
+        createdAt: new Date()
+      })
+      .then(() => {
+        alert("마음알림 시간이 저장되었습니다 😊");
+      })
+      .catch((error) => {
+        console.error("저장 실패:", error);
+        alert("저장에 실패했습니다.");
+      });
+    }
+  </script>
 </body>
 </html>
