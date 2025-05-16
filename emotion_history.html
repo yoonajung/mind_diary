@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>감정 히스토리</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fffefa;
+      padding: 40px;
+      max-width: 700px;
+      margin: auto;
+    }
+    h1 {
+      color: #4a5e9d;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background-color: #f1f5ff;
+      margin-bottom: 10px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .date {
+      color: #333;
+    }
+    .emotion {
+      font-size: 26px;
+    }
+    .back {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .back a {
+      color: #4a5e9d;
+      text-decoration: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📆 감정 히스토리</h1>
+
+  <ul id="emotionList">
+    <li>불러오는 중...</li>
+  </ul>
+
+  <div class="back">
+    <a href="index.html">← 홈으로 돌아가기</a>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    window.onload = () => {
+      const uid = localStorage.getItem("uid");
+      if (!uid) {
+        alert("로그인 후 이용 가능합니다.");
+        location.href = "index.html";
+        return;
+      }
+
+      const list = document.getElementById("emotionList");
+      list.innerHTML = "";
+
+      db.collection("emotions")
+        .where("uid", "==", uid)
+        .orderBy("date", "desc")
+        .get()
+        .then(snapshot => {
+          if (snapshot.empty) {
+            list.innerHTML = "<li>기록된 감정이 없습니다.</li>";
+            return;
+          }
+
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const li = document.createElement("li");
+            li.innerHTML = `<span class="date">${data.date}</span><span class="emotion">${data.emotion}</span>`;
+            list.appendChild(li);
+          });
+        })
+        .catch(error => {
+          console.error("감정 기록 불러오기 오류:", error);
+          list.innerHTML = "<li>데이터를 불러오는 데 실패했습니다.</li>";
+        });
+    };
+  </script>
+
+</body>
+</html>
