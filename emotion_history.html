@@ -76,27 +76,29 @@
     };
 
     firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
     const db = firebase.firestore();
 
     window.onload = () => {
       const uid = localStorage.getItem("uid");
+      const list = document.getElementById("emotionList");
+
       if (!uid) {
         alert("로그인 후 이용 가능합니다.");
         location.href = "index.html";
         return;
       }
 
-      const list = document.getElementById("emotionList");
-      list.innerHTML = "";
+      list.innerHTML = "<li>불러오는 중...</li>";
 
       db.collection("emotions")
         .where("uid", "==", uid)
         .orderBy("date", "desc")
         .get()
         .then(snapshot => {
+          list.innerHTML = "";
+
           if (snapshot.empty) {
-            list.innerHTML = "<li>기록된 감정이 없습니다.</li>";
+            list.innerHTML = "<li>감정 기록이 아직 없습니다.</li>";
             return;
           }
 
@@ -108,8 +110,8 @@
           });
         })
         .catch(error => {
-          console.error("감정 기록 불러오기 오류:", error);
-          list.innerHTML = "<li>데이터를 불러오는 데 실패했습니다.</li>";
+          console.error("감정 불러오기 오류:", error);
+          list.innerHTML = "<li>감정 기록을 불러오는 데 실패했습니다. 콘솔 로그를 확인해 주세요.</li>";
         });
     };
   </script>
