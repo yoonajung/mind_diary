@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>감정 통계 리포트</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fdfdfd;
+      padding: 40px;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #4a5e9d;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    canvas {
+      max-width: 100%;
+      margin-bottom: 40px;
+    }
+    .back {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .back a {
+      color: #4a5e9d;
+      text-decoration: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 감정 통계 리포트</h1>
+
+  <canvas id="emotionTrendChart" height="100"></canvas>
+  <canvas id="emotionCountChart" height="100"></canvas>
+
+  <div class="back">
+    <a href="index.html">← 홈으로 돌아가기</a>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
+      authDomain: "my-mind-diary.firebaseapp.com",
+      projectId: "my-mind-diary",
+      storageBucket: "my-mind-diary.firebasestorage.app",
+      messagingSenderId: "733502213796",
+      appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const uid = localStorage.getItem("uid");
+    if (!uid) {
+      alert("로그인 후 이용 가능합니다.");
+      location.href = "index.html";
+    }
+
+    const emotionMap = { "😊": 5, "😐": 3, "😢": 1, "😠": 2, "😴": 0 };
+    const emotionLabels = ["😊", "😐", "😢", "😠", "😴"];
+
+    db.collection("emotions")
+      .where("uid", "==", uid)
+      .orderBy("date", "desc")
+      .limit(30)
+      .get()
+      .then(snapshot => {
+        const trendData = [];
+        const labels = [];
+        const freq = { "😊": 0, "😐": 0, "😢": 0, "😠": 0, "😴": 0 };
+
+        snapshot.forEach(doc => {
+          const d = doc.data();
+          if (d.emotion && d.date) {
+            labels.unshift(d.date); // 최신 날짜를 오른쪽에
+            trendData.unshift(emotionMap[d.emotion]);
+            freq[d.emotion] += 1;
+          }
+        });
+
+        // 📈 Line Chart (감정 추세)
+        new Chart(document.getElementById("emotionTrendChart"), {
+          type: "line",
+          data: {
+            labels: labels,
+            datasets: [{
+              label: "감정 변화 (최근)",
+              data: trendData,
+              borderColor: "#4a90e2",
+              backgroundColor: "rgba(74, 144, 226, 0.2)",
+              tension: 0.3,
+              fill: true,
+              pointRadius: 4,
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                ticks: {
+                  callback: value => {
+                    const emoji = Object.keys(emotionMap).find(k => emotionMap[k] === value);
+                    return emoji || "";
+                  },
+                  stepSize: 1,
+                  beginAtZero: true,
+                  max: 5
+                }
+              }
+            }
+          }
+        });
+
+        // 📊 Bar Chart (감정 빈도)
+        new Chart(document.getElementById("emotionCountChart"), {
+          type: "bar",
+          data: {
+            labels: emotionLabels,
+            datasets: [{
+              label: "감정 빈도",
+              data: emotionLabels.map(e => freq[e]),
+              backgroundColor: ["#ffcccb", "#dcdcdc", "#a3c9f1", "#ffc107", "#b0bec5"]
+            }]
+          }
+        });
+
+      }).catch(err => {
+        console.error("통계 불러오기 오류:", err);
+        alert("감정 데이터를 불러오는 데 문제가 발생했습니다.");
+      });
+  </script>
+
+</body>
+</html>
