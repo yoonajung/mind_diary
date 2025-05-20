@@ -3,57 +3,69 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>감사 일기</title>
+  <title>오늘 감사한 일</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background: #f0fff7;
+      background: #fefae0;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #2e6f5d;
+      color: #4f4f4f;
       text-align: center;
     }
     textarea {
       width: 100%;
-      height: 60px;
+      height: 100px;
       font-size: 16px;
       padding: 10px;
-      margin: 10px 0;
       border: 1px solid #ccc;
       border-radius: 6px;
       resize: none;
+      margin-bottom: 15px;
     }
     button {
       display: block;
-      margin: 30px auto 0;
-      padding: 10px 25px;
+      margin: 20px auto 10px;
+      padding: 10px 20px;
       font-size: 16px;
-      background-color: #c2f2dd;
+      background-color: #f9d976;
       color: #333;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #b1e5cf;
+      background-color: #f7ce54;
+    }
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back a {
+      text-decoration: none;
+      color: #444;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h2>💌 오늘 감사한 일 3가지</h2>
-  <textarea id="item1" placeholder="#1 감사한 순간..."></textarea>
-  <textarea id="item2" placeholder="#2 감사한 순간..."></textarea>
-  <textarea id="item3" placeholder="#3 감사한 순간..."></textarea>
-  <button onclick="saveGratitude()">저장하기</button>
+  <h2>💛 오늘 감사한 일</h2>
+  <textarea id="gratitude1" placeholder="감사한 일 1"></textarea>
+  <textarea id="gratitude2" placeholder="감사한 일 2"></textarea>
+  <textarea id="gratitude3" placeholder="감사한 일 3"></textarea>
+  <button onclick="saveGratitudes()">저장하기</button>
 
-  <!-- Firebase SDK (모듈형) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <div class="back">
+    <a href="index.html">← 홈으로 돌아가기</a>
+  </div>
 
+  <!-- Firebase SDK (Compat 버전) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
       authDomain: "my-mind-diary.firebaseapp.com",
@@ -63,35 +75,40 @@
       appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    window.saveGratitude = async function () {
-      const item1 = document.getElementById("item1").value.trim();
-      const item2 = document.getElementById("item2").value.trim();
-      const item3 = document.getElementById("item3").value.trim();
+    const uid = localStorage.getItem("uid");
 
-      if (!item1 && !item2 && !item3) {
-        alert("감사한 일을 하나 이상 입력해주세요 🙏");
+    async function saveGratitudes() {
+      const g1 = document.getElementById('gratitude1').value.trim();
+      const g2 = document.getElementById('gratitude2').value.trim();
+      const g3 = document.getElementById('gratitude3').value.trim();
+
+      if (!g1 && !g2 && !g3) {
+        alert("감사한 일을 한 가지 이상 입력해주세요!");
         return;
       }
 
       try {
-        await addDoc(collection(db, "gratitudes"), {
-          item1,
-          item2,
-          item3,
-          createdAt: serverTimestamp()
+        await db.collection("gratitudes").add({
+          uid: uid || "anonymous",
+          gratitude1: g1,
+          gratitude2: g2,
+          gratitude3: g3,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-        alert("감사 일기가 저장되었습니다 🌿");
-
-        document.getElementById("item1").value = "";
-        document.getElementById("item2").value = "";
-        document.getElementById("item3").value = "";
+        alert("감사일기가 저장되었습니다 🙏");
+        window.location.href = "index.html";  // 저장 후 홈으로 이동
       } catch (e) {
         console.error("저장 실패:", e);
-        alert("저장 중 오류가 발생했습니다.");
+        alert("저장에 실패했습니다. 다시 시도해주세요.");
       }
+    }
+  </script>
+</body>
+</html>
+
     }
   </script>
 </body>
