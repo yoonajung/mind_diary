@@ -28,7 +28,7 @@
     }
     button {
       display: block;
-      margin: 30px auto 0;
+      margin: 30px auto 10px;
       padding: 10px 25px;
       font-size: 16px;
       background-color: #ffd8a9;
@@ -40,6 +40,15 @@
     button:hover {
       background-color: #ffcd8a;
     }
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back a {
+      text-decoration: none;
+      color: #5a4a42;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
@@ -47,13 +56,14 @@
   <textarea id="diaryText" placeholder="오늘 있었던 일과 느낀 감정을 적어보세요..."></textarea>
   <button onclick="saveDiary()">저장하기</button>
 
-  <!-- Firebase SDK -->
-  <script type="module">
-    // Firebase SDK
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  <div class="back">
+    <a href="index.html">← 홈으로 돌아가기</a>
+  </div>
 
-    // Firebase 설정
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyAJDx7OA5wFBxBPDGpeLIHigQamFRK5ivY",
       authDomain: "my-mind-diary.firebaseapp.com",
@@ -63,24 +73,26 @@
       appId: "1:733502213796:web:1fd8cdf51ec348f9606031"
     };
 
-    // Firebase 초기화
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
 
-    // 저장 함수
+    const uid = localStorage.getItem("uid");
+
     async function saveDiary() {
       const text = document.getElementById('diaryText').value;
       if (!text.trim()) {
         alert("내용을 입력해주세요!");
         return;
       }
+
       try {
-        await addDoc(collection(db, "diaries"), {
+        await db.collection("diaries").add({
+          uid: uid || "anonymous",
           content: text,
-          createdAt: serverTimestamp()
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
         alert("마음일기가 저장되었습니다 📝");
-        document.getElementById('diaryText').value = "";
+        window.location.href = "index.html";
       } catch (e) {
         console.error("저장 실패: ", e);
         alert("저장에 실패했습니다. 콘솔을 확인해주세요.");
