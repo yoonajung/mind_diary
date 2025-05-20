@@ -6,14 +6,14 @@
   <title>하루 한 줄 독서 노트</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f9ff;
+      font-family: 'Arial', sans-serif;
+      background: #f1fff0;
       padding: 40px;
       max-width: 600px;
       margin: auto;
     }
     h2 {
-      color: #3b5a87;
+      color: #2f4f4f;
       text-align: center;
     }
     textarea {
@@ -21,33 +21,46 @@
       height: 150px;
       font-size: 16px;
       padding: 12px;
-      margin-top: 10px;
       border: 1px solid #ccc;
       border-radius: 6px;
       resize: none;
+      margin-top: 10px;
     }
     button {
       display: block;
-      margin: 30px auto 0;
+      margin: 30px auto 10px;
       padding: 10px 25px;
       font-size: 16px;
-      background-color: #d6e6fb;
+      background-color: #c4f0c5;
       color: #333;
       border: none;
       border-radius: 5px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #c6dbf6;
+      background-color: #aeeab3;
+    }
+    .back {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .back a {
+      text-decoration: none;
+      color: #444;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h2>📖 오늘의 한 줄 독서</h2>
-  <textarea id="quote" placeholder="기억하고 싶은 문장을 적어보세요..."></textarea>
+  <h2>📖 하루 한 줄 독서 노트</h2>
+  <textarea id="readingNote" placeholder="오늘 기억하고 싶은 문장을 적어보세요"></textarea>
   <button onclick="saveReading()">저장하기</button>
 
-  <!-- Firebase SDK (Compat) -->
+  <div class="back">
+    <a href="index.html">← 홈으로 돌아가기</a>
+  </div>
+
+  <!-- Firebase SDK (Compat 버전) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <script>
@@ -62,26 +75,27 @@
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const uid = localStorage.getItem("uid");
 
-    function saveReading() {
-      const quote = document.getElementById("quote").value.trim();
-      if (!quote) {
-        alert("내용을 입력해주세요 😊");
+    async function saveReading() {
+      const text = document.getElementById("readingNote").value.trim();
+      if (!text) {
+        alert("내용을 입력해주세요!");
         return;
       }
 
-      db.collection("readings").add({
-        quote,
-        createdAt: new Date()
-      })
-      .then(() => {
-        alert("한 줄 독서 노트가 저장되었습니다 📚");
-        document.getElementById("quote").value = "";
-      })
-      .catch((error) => {
-        console.error("저장 실패:", error);
-        alert("저장 중 오류가 발생했습니다.");
-      });
+      try {
+        await db.collection("readings").add({
+          uid: uid || "anonymous",
+          content: text,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("독서 노트가 저장되었습니다 📚");
+        window.location.href = "index.html"; // 자동 홈 이동
+      } catch (e) {
+        console.error("저장 실패:", e);
+        alert("저장에 실패했습니다. 다시 시도해주세요.");
+      }
     }
   </script>
 </body>
